@@ -202,6 +202,8 @@
     audio.addEventListener('pause',save);
   }
   nav();
+  window.addEventListener('samorazvitie:imported',function(){try{memory=Object.assign(initial(),JSON.parse(localStorage.getItem(KEY)||'{}'));}catch(_){memory=initial();}paint();});
+  window.addEventListener('samorazvitie:cleared',function(){memory=initial();});
   window.addEventListener('hashchange',paint);
   paint();
 })();
