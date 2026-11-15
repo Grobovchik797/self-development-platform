@@ -1,10 +1,21 @@
-# DEPLOY · GitHub Pages
+# DEPLOY · GitHub Pages · v1.2
 
-1. Репозиторий: https://github.com/Grobovchik797/self-development-platform .
-2. На GitHub: **Settings → Pages → Build and deployment → Source → GitHub Actions** (одноразовая настройка владельца; нужна, если Pages ещё не активированы).
-3. После изменения ветки `main` workflow `.github/workflows/pages.yml` проверяет HTML/JS и публикует статический артефакт.
-4. Успешный deploy должен вывести адрес вида https://grobovchik797.github.io/self-development-platform/ .
-5. До успешной загрузки страницы по HTTPS это только предполагаемый адрес, не подтверждённая публикация.
-6. Если Pages отключены, job `Configure Pages` может завершиться ошибкой. Выбрать GitHub Actions как Source и запустить workflow повторно.
+**Опубликованный адрес:** https://grobovchik797.github.io/self-development-platform/
 
-**Приватность:** сайт и код доступны всем, кто знает адрес; тэг `noindex` не даёт контроль доступа. Никаких исходных защищённых книг, аудио и личных заметок в репозитории.
+**Последний проверенный выпуск:** GitHub Actions [43689400887](https://github.com/Grobovchik797/self-development-platform/actions/runs/43689400887), 15.11.2026, `verify=success`, `deploy=success`. После развёртывания:
+- `index.html` получен по HTTPS, HTTP 200, 70 710 символов;
+- `learning-v12.js` получен по HTTPS, HTTP 200, 21 093 символа.
+
+## Как происходят следующие обновления
+
+1. Новую функциональность разрабатывать в отдельной ветке внутри `Grobovchik797/self-development-platform`.
+2. Открывать Pull Request в `main`. Автоматическая проверка запускает Node.js, Chromium на ширинах 320/390/768/1440 px, проверяет HTML, JS и сохранение данных.
+3. После успешного теста объединять проверенный PR в `main`.
+4. GitHub Actions публикует сайт через Pages и затем выполняет HTTPS health check реального HTML и отдельного учебного модуля.
+5. Везде используется один и тот же адрес. Ручная настройка Pages больше не нужна, пока владелец сам не отключит Pages.
+
+## Ограничения
+
+Сайт доступен любому, у кого есть ссылка. `noindex` только просьба поисковикам; не авторизация. Исходные MP3 и PDF, личные заметки, пароли, API-ключи не коммитить в публичный репозиторий.
+
+Локальные заметки и прогресс сохраняются в браузере. Сайт пока не имеет серверной синхронизации.
