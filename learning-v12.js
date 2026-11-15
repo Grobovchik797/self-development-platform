@@ -79,7 +79,7 @@
     return '<section class="panel v12-extra v12-card" id="v12-self"><div class="eyebrow">АКТИВНОЕ ВОСПРОИЗВЕДЕНИЕ</div><h3>Объясни без подсказок</h3><p>'+safe(p.question)+'</p>'+
       '<form data-v12-recall="'+safe(l.id)+'"><label class="small" for="v12-answer">Твой ответ (минимум 80 символов)</label><textarea id="v12-answer" name="answer" minlength="80" maxlength="2000" required placeholder="Напиши своими словами. Только потом посмотри критерии.">'+safe(val)+'</textarea><div class="button-row"><button class="btn primary" type="submit">Сохранить ответ и открыть критерии</button></div></form>'+
       '<div class="v12-status" role="status">'+selfStatus(l.id)+'</div>'+
-      '<div id="v12-criteria" class="note-strip" '+(!val?'hidden':'')+'><strong>Критерии самостоятельной проверки:</strong><ol>'+p.criteria.map(function(x){return '<li>'+safe(x)+'</li>';}).join('')+'</ol><p class="small">Оцени себя по критериям. Сайт не умеет проверять смысл произвольного ответа без ИИ и не выдаёт оценку за знание.</p><button type="button" class="btn" data-v12-selfcheck="'+safe(l.id)+'">'+(marked?'✓ Самопроверка отмечена':'Я сверил ответ с критериями')+'</button></div>'+
+      '<div id="v12-criteria" class="note-strip" '+(!val?'hidden':'')+'><strong>Критерии самостоятельной проверки:</strong><ol>'+p.criteria.map(function(x){return '<li>'+safe(x)+'</li>';}).join('')+'</ol><p class="small">Оцени себя по критериям. Сайт не умеет проверять смысл произвольного ответа без ИИ и не выдаёт оценку за знание.</p><button type="button" class="btn" data-v12-selfcheck="'+safe(l.id)+'" '+(marked?'disabled':'')+'>'+(marked?'✓ Самопроверка отмечена':'Я сверил ответ с критериями')+'</button></div>'+
       '<p class="small">Чтобы пройти полную практику урока, нужно верно решить кейс выше и самостоятельно проверить свободный ответ. Это всё ещё самопроверка, а не независимый экзамен.</p></section>';
   }
   function addLesson(){
@@ -158,6 +158,9 @@
     if(t.dataset.v12Selfcheck){
       const id=t.dataset.v12Selfcheck;
       if((memory.responses[id]||'').trim().length<80)return;
+      if(memory.checked[id])return;
+      let basic={};try{basic=JSON.parse(localStorage.getItem('samorazvitie_site_v1')||'{}');}catch(_){}
+      if(!basic.quiz||!basic.quiz[id]||basic.quiz[id].correct!==true){alert('Сначала правильно реши практический кейс выше, затем вернись к самопроверке.');return;}
       memory.checked[id]=true;grade(id,'remember');save();
       const box=document.getElementById('v12-self');if(box){const l=lessons.find(function(x){return x.id===id;});if(l)box.outerHTML=selfHtml(l);}
       return;
