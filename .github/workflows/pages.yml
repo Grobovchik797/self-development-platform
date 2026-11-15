@@ -26,6 +26,12 @@ jobs:
         run: node scripts/verify-site.mjs
       - name: Check public website verifier syntax
         run: python3 -m py_compile scripts/verify-public-site.py
+      - name: Install Chromium for functional tests
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Browser smoke tests (320–1440 px)
+        run: node tests/browser-smoke.mjs
 
   deploy:
     if: github.event_name != 'pull_request'
