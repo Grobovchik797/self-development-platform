@@ -134,6 +134,7 @@
       document.querySelectorAll('.side [data-nav]').forEach(function(a){a.classList.toggle('active',a.getAttribute('href')===hash);});
     }else if(hash.indexOf('#/learn/')===0){addLesson();}
     else if(hash==='#/reviews'){if(!document.getElementById('v12-reviews'))root.insertAdjacentHTML('beforeend',reviewDue());}
+    else if(hash==='#/books'){const speed=document.getElementById('audio-speed');if(speed&&memory.audio)speed.value=String(memory.audio.speed||1);} 
     else if(hash==='#/practice'){if(!document.getElementById('v12-practice-links'))root.insertAdjacentHTML('beforeend','<section id="v12-practice-links" class="panel v12-extra v12-card"><h3>Следующий уровень практики</h3><p>После вариантов ответа попробуй объяснить решение самому. Дополнительные кейсы открой в лаборатории.</p><a class="btn primary" href="#/lab">Перейти в бизнес-лабораторию →</a></section>');}
     else if(hash==='#/'||hash===''){if(!document.getElementById('v12-home'))root.insertAdjacentHTML('beforeend','<section id="v12-home" class="panel v12-extra v12-card"><div class="eyebrow">НОВЫЕ ИНСТРУМЕНТЫ · V1.2</div><h2>Развивай мышление на практике</h2><p>Свободный ответ, бизнес-лаборатория, проверка аргументов и карта связей между знаниями.</p><div class="button-row"><a class="btn primary" href="#/lab">Бизнес-лаборатория</a><a class="btn" href="#/arguments">Проверка аргументов</a><a class="btn" href="#/map">Карта знаний</a></div></section>');}
   }
