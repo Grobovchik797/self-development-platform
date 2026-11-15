@@ -6,11 +6,14 @@ assert.match(html,/<!doctype html>/i);
 assert.match(html,/<html[^>]+lang="ru"/i);
 assert.match(html,/<meta name="robots" content="noindex,nofollow,noarchive">/);
 assert.match(html,/<title>Саморазвитие/);
-assert.ok(!/<script[^>]+src=/.test(html),'No external scripts');
+assert.match(html,/<script src="\.\/learning-v12\.js" defer><\/script>/,'Only local enhancement script');
 assert.ok(!/<link[^>]+rel="stylesheet"/.test(html),'CSS is bundled');
 const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]);
 assert.equal(scripts.length,2,'Two inline JS bundles');
 for(const js of scripts) new vm.Script(js);
+const extra=fs.readFileSync('learning-v12.js','utf8');new vm.Script(extra);
+for(const str of ['Бизнес-лаборатория','Проверка аргументов','Карта знаний','data-v12-recall','v12-self','audio-dock'])assert.ok((html+extra).includes(str),'Missing '+str);
+assert.ok(extra.includes('Проверка аргументов'),'Preferred argument-checking label');
 const sandbox={window:{}}; vm.runInNewContext(scripts[0],sandbox);
 const {BOOK,CHAPTERS,LESSONS}=sandbox.window.SITE_DATA;
 assert.equal(CHAPTERS.length,18,'18 book sections');
@@ -25,4 +28,4 @@ for (const lesson of LESSONS) {
 }
 for(const pattern of ['#/learn','#/books','#/practice','#/reviews','#/notes','#/settings']) assert.ok(html.includes(pattern),pattern);
 assert.ok(html.includes('localStorage') && html.includes('audio-player'),'Local learning workspace');
-console.log('PASS: сайт, 18 разделов книги, 3 урока, 3 режима, практика, локальные данные.');
+console.log('PASS: v1.2 site, chapters, lessons, separate practice, sources, map, lab, audio dock.');

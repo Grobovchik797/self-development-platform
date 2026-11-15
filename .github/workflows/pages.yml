@@ -9,27 +9,34 @@ permissions:
   contents: read
 
 concurrency:
-  group: samorazvitie-pages
+  group: samorazvitie-pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: '24'
+          package-manager-cache: false
       - name: Check site integrity, lesson data and JS syntax
         run: node scripts/verify-site.mjs
       - name: Check public website verifier syntax
         run: python3 -m py_compile scripts/verify-public-site.py
+      - name: Install Chromium for functional tests
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Browser smoke tests (320–1440 px)
+        run: node tests/browser-smoke.mjs
 
   deploy:
     if: github.event_name != 'pull_request'
     needs: verify
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read
@@ -39,15 +46,15 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Configure Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
       - name: Upload static site
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: .
       - name: Publish
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
       - name: Confirm live site really opens over HTTPS
         run: python3 scripts/verify-public-site.py
