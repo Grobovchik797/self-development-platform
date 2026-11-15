@@ -12,6 +12,7 @@ EXPECTED = [
     'name="robots" content="noindex,nofollow,noarchive"',
     "const LESSONS",
     "const CHAPTERS",
+    '<script src="./learning-v12.js" defer></script>',
 ]
 
 for attempt in range(1, 13):
@@ -31,7 +32,15 @@ for attempt in range(1, 13):
             raise RuntimeError(
                 f"status={code}, url={location}, chars={len(body)}, missing={missing}"
             )
+        with urllib.request.urlopen(urllib.request.Request(
+            URL + "learning-v12.js", headers={"User-Agent": "Samorazvitie-Pages-Healthcheck/1.0"}
+        ), timeout=12) as script_response:
+            script_status = script_response.status
+            script_body = script_response.read(150_000).decode("utf-8", errors="replace")
+        if script_status != 200 or "Бизнес-лаборатория" not in script_body or "Проверка аргументов" not in script_body:
+            raise RuntimeError(f"learning-v12.js unavailable or incomplete: {script_status}")
         print(f"PASS: Public GitHub Pages serves the actual Samorazvitie HTML (HTTP {code}; {len(body)} characters) at {location}")
+        print(f"PASS: Separate learning-v12.js delivered correctly (HTTP {script_status}; {len(script_body)} characters)")
         sys.exit(0)
     except (urllib.error.URLError, RuntimeError, TimeoutError) as error:
         print(f"Attempt {attempt}/12: {type(error).__name__}: {error}", flush=True)
