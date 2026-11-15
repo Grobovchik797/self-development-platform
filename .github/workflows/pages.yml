@@ -23,6 +23,8 @@ jobs:
           node-version: '22'
       - name: Check site integrity, lesson data and JS syntax
         run: node scripts/verify-site.mjs
+      - name: Check public website verifier syntax
+        run: python3 -m py_compile scripts/verify-public-site.py
 
   deploy:
     if: github.event_name != 'pull_request'
@@ -47,3 +49,5 @@ jobs:
       - name: Publish
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Confirm live site really opens over HTTPS
+        run: python3 scripts/verify-public-site.py
