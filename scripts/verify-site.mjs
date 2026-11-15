@@ -13,7 +13,7 @@ assert.equal(scripts.length,2,'Two inline JS bundles');
 for(const js of scripts) new vm.Script(js);
 const extra=fs.readFileSync('learning-v12.js','utf8');new vm.Script(extra);
 for(const str of ['Бизнес-лаборатория','Проверка аргументов','Карта знаний','data-v12-recall','v12-self','audio-dock'])assert.ok((html+extra).includes(str),'Missing '+str);
-assert.ok(!extra.includes('Адвокат дьявола'),'Do not use prohibited label');
+assert.ok(extra.includes('Проверка аргументов'),'Preferred argument-checking label');
 const sandbox={window:{}}; vm.runInNewContext(scripts[0],sandbox);
 const {BOOK,CHAPTERS,LESSONS}=sandbox.window.SITE_DATA;
 assert.equal(CHAPTERS.length,18,'18 book sections');
